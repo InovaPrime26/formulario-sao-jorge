@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Baixa de Recebimento — São Jorge</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0;--card:#fff;--border:#e2e0d8;--border2:#ccc9be;
+  --text:#1a1916;--text2:#6b6860;--text3:#a09d96;
+  --blue:#1a56db;--blue-bg:#eff4ff;--blue-bd:#a4cafe;
+  --green:#0e9f6e;--green-bg:#f3faf7;--green-bd:#84e1bc;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-bd:#fcd34d;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --r:10px;--rs:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+/* HEADER */
+.header{background:var(--text);padding:16px 20px 14px;position:sticky;top:0;z-index:100}
+.header-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6b6860;margin-bottom:3px}
+.header-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:-.02em}
+.header-sub{font-size:11px;color:#9ca3af;margin-top:2px}
+.progress-bar{height:2px;background:#2d2c29;margin-top:12px;border-radius:1px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#10b981);transition:width .4s;width:0%}
+
+/* BANNER DATA */
+.date-banner{background:var(--green-bg);border-bottom:1px solid var(--green-bd);padding:9px 20px;display:flex;align-items:center;gap:8px}
+.date-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.date-text{font-family:'DM Mono',monospace;font-size:12px;color:var(--green);font-weight:500}
+
+/* BODY */
+.body{padding:14px 16px 0;max-width:520px;margin:0 auto}
+.sec-header{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.sec-num{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;background:var(--text);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3)}
+.group{display:flex;flex-direction:column;gap:10px}
+
+/* FIELD */
+.field{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;transition:border-color .15s}
+.field:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.07)}
+.field.req{border-left:3px solid var(--blue)}
+.field-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:9px}
+.field-label{font-size:14px;font-weight:500;color:var(--text);line-height:1.3}
+.field-hint{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+.badge-req{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;padding:2px 6px;border-radius:4px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);white-space:nowrap;flex-shrink:0}
+.badge-opt{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;background:var(--bg);color:var(--text3);border:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+.error-msg{font-size:11px;color:var(--red);margin-top:5px;display:none}
+.field.error{border-color:#fca5a5}.field.error .error-msg{display:block}
+
+/* INPUTS */
+input[type=text],input[type=number],input[type=date],textarea,select{
+  width:100%;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);
+  padding:10px 12px;outline:none;appearance:none;-webkit-appearance:none;transition:border-color .15s
+}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);background:#fff}
+input::placeholder,textarea::placeholder{color:var(--text3);font-size:14px}
+textarea{resize:none;min-height:68px;line-height:1.5}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23a09d96' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer
+}
+
+/* GRID 2 colunas */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* VALOR LÍQUIDO */
+.liq-box{background:var(--green-bg);border:1px solid var(--green-bd);border-radius:var(--r);padding:13px 15px;display:flex;align-items:center;justify-content:space-between}
+.liq-label{font-size:13px;color:var(--green);font-weight:500}
+.liq-value{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--green)}
+
+/* RADIO */
+.radio-grid{display:flex;flex-direction:column;gap:6px}
+.radio-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .12s;background:var(--bg);user-select:none}
+.radio-item:hover{border-color:var(--blue);background:var(--blue-bg)}
+.radio-item.active{border-color:var(--blue);background:var(--blue-bg)}
+.radio-circle{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .12s}
+.radio-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);opacity:0;transform:scale(0);transition:all .12s}
+.radio-item.active .radio-circle{border-color:var(--blue)}
+.radio-item.active .radio-dot{opacity:1;transform:scale(1)}
+.radio-text{font-size:14px;color:var(--text)}
+
+/* CREDITO FIELD */
+.cred-toggle{display:flex;align-items:center;gap:10px;padding:12px 15px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none}
+.toggle-box{width:40px;height:22px;border-radius:11px;background:var(--border2);position:relative;transition:background .2s;flex-shrink:0}
+.toggle-box.on{background:var(--blue)}
+.toggle-knob{width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.toggle-box.on .toggle-knob{left:20px}
+.toggle-label{font-size:14px;font-weight:500;color:var(--text)}
+.toggle-sub{font-size:11px;color:var(--text3)}
+.cred-input{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s,opacity .25s,margin .3s;margin-top:0}
+.cred-input.show{max-height:120px;opacity:1;margin-top:10px}
+
+/* SUBMIT */
+.submit-area{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;margin-top:18px}
+.checklist{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.chk-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
+.chk-icon{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:var(--text3);transition:all .2s}
+.chk-icon.done{background:var(--green);border-color:var(--green);color:#fff}
+.submit-btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:var(--rs);padding:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-.01em;transition:opacity .15s,transform .1s}
+.submit-btn:hover{opacity:.88}
+.submit-btn:active{transform:scale(.98)}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+.submit-note{font-size:11px;color:var(--text3);text-align:center;margin-top:7px}
+
+/* SUCESSO */
+.success{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:40px 24px;text-align:center}
+.success.show{display:flex}
+.success-icon{width:60px;height:60px;border-radius:50%;background:var(--green-bg);border:2px solid var(--green-bd);display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:26px}
+.success-title{font-size:21px;font-weight:600;color:var(--text);margin-bottom:7px}
+.success-sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:22px}
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;width:100%;max-width:320px;text-align:left;margin-bottom:18px}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-label{color:var(--text2)}
+.sum-value{font-weight:500;color:var(--text);font-family:'DM Mono',monospace;font-size:12px}
+.new-btn{background:var(--text);color:#fff;border:none;border-radius:var(--rs);padding:12px 28px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+.new-btn:hover{opacity:.85}
+
+/* SCRIPT_URL banner */
+.config-banner{background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:var(--r);padding:12px 15px;margin:14px 0;font-size:12px;color:var(--amber);font-weight:500;display:none}
+.config-banner.show{display:block}
+</style>
+</head>
+<body>
+<div id="main">
+
+<div class="header">
+  <div class="header-eyebrow">BPO Financeiro · InovaPrime</div>
+  <div class="header-title">Baixa de Recebimento</div>
+  <div class="header-sub">Laboratório São Jorge</div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+</div>
+
+<div class="date-banner">
+  <div class="date-dot"></div>
+  <div class="date-text" id="dt">—</div>
+</div>
+
+<div class="body">
+
+  <!-- AVISO config -->
+  <div class="config-banner" id="cfg-banner">
+    ⚙ Para ativar o envio para a planilha, substitua COLE_AQUI_A_URL no código pela URL do Google Apps Script.
+  </div>
+
+  <!-- SEÇÃO 1 -->
+  <div class="sec-header"><div class="sec-num">1</div><div class="sec-title">Identificação</div></div>
+  <div class="group">
+    <div class="field req" id="f-cliente">
+      <div class="field-top">
+        <div><div class="field-label">Nome do cliente</div><div class="field-hint">Nome do dentista ou clínica</div></div>
+        <span class="badge-req">obrigatório</span>
+      </div>
+      <input type="text" id="cliente" placeholder="Ex: Dr. Carlos Silva" oninput="upd()" autocomplete="off">
+      <div class="error-msg">Informe o nome do cliente.</div>
+    </div>
+
+    <div class="field" id="f-vendedor">
+      <div class="field-top">
+        <div><div class="field-label">Vendedor / região</div></div>
+        <span class="badge-opt">opcional</span>
+      </div>
+      <input type="text" id="vendedor" placeholder="Ex: Luiz" oninput="upd()" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2 -->
+  <div class="sec-header"><div class="sec-num">2</div><div class="sec-title">Pagamento</div></div>
+  <div class="group">
+
+    <div class="grid2">
+      <div class="field req" id="f-dia">
+        <div class="field-top" style="margin-bottom:7px">
+          <div><div class="field-label">Data</div></div>
+          <span class="badge-req" style="font-size:8px">obrig.</span>
+        </div>
+        <input type="date" id="dia" onchange="upd()">
+        <div class="error-msg">Informe a data.</div>
+      </div>
+      <div class="field req" id="f-mes">
+        <div class="field-top" style="margin-bottom:7px">
+          <div><div class="field-label">Mês extrato</div></div>
+          <span class="badge-req" style="font-size:8px">obrig.</span>
+        </div>
+        <select id="mes" onchange="upd()">
+          <option value="">Selecione...</option>
+          <option>Janeiro 2026</option><option>Fevereiro 2026</option>
+          <option>Março 2026</option><option>Abril 2026</option>
+          <option>Maio 2026</option><option>Junho 2026</option>
+          <option>Julho 2026</option><option>Agosto 2026</option>
+          <option>Setembro 2026</option><option>Outubro 2026</option>
+          <option>Novembro 2026</option><option>Dezembro 2026</option>
+        </select>
+        <div class="error-msg">Selecione o mês.</div>
+      </div>
+    </div>
+
+    <div class="field req" id="f-banco">
+      <div class="field-top">
+        <div><div class="field-label">Banco recebido</div><div class="field-hint">Onde o dinheiro entrou</div></div>
+        <span class="badge-req">obrigatório</span>
+      </div>
+      <div class="radio-grid">
+        <div class="radio-item" onclick="sel('banco','bradesco',this)"><div class="radio-circle"><div class="radio-dot"></div></div><div class="radio-text">Bradesco</div></div>
+        <div class="radio-item" onclick="sel('banco','bradesco_novo',this)"><div class="radio-circle"><div class="radio-dot"></div></div><div class="radio-text">Bradesco (novo)</div></div>
+        <div class="radio-item" onclick="sel('banco','itau',this)"><div class="radio-circle"><div class="radio-dot"></div></div><div class="radio-text">Itaú</div></div>
+        <div class="radio-item" onclick="sel('banco','caixa',this)"><div class="radio-circle"><div class="radio-dot"></div></div><div class="radio-text">Caixa físico (dinheiro)</div></div>
+        <div class="radio-item" onclick="sel('banco','cheque',this)"><div class="radio-circle"><div class="radio-dot"></div></div><div class="radio-text">Cheque</div></div>
+        <div class="radio-item" onclick="sel('banco','cartao',this)"><div class="radio-circle"><div class="radio-dot"></div></div><div class="radio-text">Cartão</div></div>
+      </div>
+      <div class="error-msg">Selecione o banco.</div>
+
+      <!-- Condicional: Cheque -->
+      <div class="cred-input" id="cond-cheque" style="margin-top:0">
+        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px;margin-top:10px">
+          <div style="font-size:11px;font-weight:600;color:#d97706;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Dados do cheque</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+            <div>
+              <div style="font-size:12px;font-weight:500;color:#1a1916;margin-bottom:5px">Nº do cheque <span style="color:#dc2626">*</span></div>
+              <input type="text" id="num-cheque" placeholder="000123" autocomplete="off" style="background:#fff">
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:500;color:#1a1916;margin-bottom:5px">Vencimento <span style="color:#dc2626">*</span></div>
+              <input type="date" id="venc-cheque" style="background:#fff">
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:500;color:#1a1916;margin-bottom:5px">Banco emissor do cheque</div>
+            <select id="banco-cheque" style="background:#fff">
+              <option value="">Selecione...</option>
+              <option>Bradesco</option><option>Itaú</option>
+              <option>Banco do Brasil</option><option>Santander</option>
+              <option>Caixa Econômica</option><option>Nubank</option>
+              <option>Outro</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field req" id="f-valor">
+        <div class="field-top" style="margin-bottom:7px">
+          <div><div class="field-label">Valor recebido</div></div>
+          <span class="badge-req" style="font-size:8px">obrig.</span>
+        </div>
+        <input type="number" id="valor" placeholder="0,00" step="0.01" min="0.01" oninput="calcLiq();upd()">
+        <div class="error-msg">Informe o valor.</div>
+      </div>
+      <div class="field" id="f-desconto">
+        <div class="field-top" style="margin-bottom:7px">
+          <div><div class="field-label">Desconto</div></div>
+          <span class="badge-opt" style="font-size:8px">opc.</span>
+        </div>
+        <input type="number" id="desconto" placeholder="0,00" step="0.01" min="0" oninput="calcLiq();upd()">
+      </div>
+    </div>
+
+    <!-- Valor líquido -->
+    <div class="liq-box" id="liq-box" style="display:none">
+      <div class="liq-label">Valor líquido</div>
+      <div class="liq-value" id="liq-val">R$ 0,00</div>
+    </div>
+
+    <!-- Crédito toggle -->
+    <div>
+      <div class="cred-toggle" onclick="toggleCred()">
+        <div class="toggle-box" id="tog"><div class="toggle-knob"></div></div>
+        <div>
+          <div class="toggle-label">Tem valor de crédito?</div>
+          <div class="toggle-sub">Cliente pagou a mais que o saldo devedor</div>
+        </div>
+      </div>
+      <div class="cred-input" id="cred-input">
+        <div class="field" style="border-left:3px solid var(--blue)">
+          <div class="field-top" style="margin-bottom:7px">
+            <div><div class="field-label">Valor do crédito (R$)</div><div class="field-hint">Valor que excedeu o saldo</div></div>
+          </div>
+          <input type="number" id="credito" placeholder="0,00" step="0.01" min="0.01" oninput="upd()">
+        </div>
+        <div style="background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:var(--rs);padding:10px 12px;margin-top:8px;font-size:12px;color:var(--amber);font-weight:500">
+          ⚠ Crédito registrado. O financeiro (InovaPrime) irá lançar como adiantamento no Conta Azul.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEÇÃO 3 -->
+  <div class="sec-header"><div class="sec-num">3</div><div class="sec-title">Observação</div></div>
+  <div class="group">
+    <div class="field">
+      <div class="field-top">
+        <div><div class="field-label">Observação</div><div class="field-hint">NF, pagador diferente, combinado especial...</div></div>
+        <span class="badge-opt">opcional</span>
+      </div>
+      <textarea id="obs" placeholder="Ex: NF emitir no CNPJ da clínica · Pagamento feito pela esposa · Saldo parcelado..."></textarea>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area" style="margin-bottom:0">
+    <div class="checklist">
+      <div class="chk-row"><div class="chk-icon" id="c1">1</div><span>Nome do cliente preenchido</span></div>
+      <div class="chk-row"><div class="chk-icon" id="c2">2</div><span>Data e mês informados</span></div>
+      <div class="chk-row"><div class="chk-icon" id="c3">3</div><span>Banco selecionado</span></div>
+      <div class="chk-row"><div class="chk-icon" id="c4">4</div><span>Valor preenchido</span></div>
+    </div>
+    <button class="submit-btn" id="btn" onclick="enviar()">Registrar recebimento</button>
+    <div class="submit-note">Os dados vão direto para a planilha do financeiro</div>
+  </div>
+
+</div><!-- /body -->
+</div><!-- /main -->
+
+<!-- SUCESSO -->
+<div class="success" id="success">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Registrado!</div>
+  <div class="success-sub">Os dados chegaram para o financeiro.<br>Nenhuma anotação adicional necessária.</div>
+  <div class="summary-card" id="summary"></div>
+  <button class="new-btn" onclick="reset()">Registrar outro</button>
+</div>
+
+<script>
+// ── Cole aqui a URL do Google Apps Script após o deploy ──────────────
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzVLSuQgbPZgB9YA50gvnypBFDj6VoH8yE5c4AOIy7IXwdBylqMKh8tuMj_7YylLb4/exec";
+// ─────────────────────────────────────────────────────────────────────
+
+var fd = { banco: '' };
+var credOn = false;
+
+// Aviso se URL não configurada
+if (SCRIPT_URL === "COLE_AQUI_A_URL_DO_APPS_SCRIPT") {
+  document.getElementById('cfg-banner').classList.add('show');
+}
+
+// Data/hora
+function updDt() {
+  var now = new Date();
+  var d = now.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'});
+  var t = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('dt').textContent = d + ' — ' + t;
+}
+updDt(); setInterval(updDt, 30000);
+
+// Definir data padrão como hoje
+document.getElementById('dia').valueAsDate = new Date();
+
+// Seleção radio
+function sel(group, value, el) {
+  fd[group] = value;
+  el.closest('.radio-grid').querySelectorAll('.radio-item').forEach(function(i) {
+    i.classList.remove('active');
+    i.querySelector('.radio-dot').style.opacity = '0';
+    i.querySelector('.radio-dot').style.transform = 'scale(0)';
+  });
+  el.classList.add('active');
+  el.querySelector('.radio-dot').style.opacity = '1';
+  el.querySelector('.radio-dot').style.transform = 'scale(1)';
+  document.getElementById('f-banco').classList.remove('error');
+  // Mostrar campos de cheque se selecionado
+  var condCheque = document.getElementById('cond-cheque');
+  if (condCheque) condCheque.classList.toggle('show', value === 'cheque');
+  upd();
+}
+
+// Toggle crédito
+function toggleCred() {
+  credOn = !credOn;
+  document.getElementById('tog').classList.toggle('on', credOn);
+  document.getElementById('cred-input').classList.toggle('show', credOn);
+  if (!credOn) document.getElementById('credito').value = '';
+}
+
+// Calcular líquido
+function calcLiq() {
+  var v = parseFloat(document.getElementById('valor').value) || 0;
+  var d = parseFloat(document.getElementById('desconto').value) || 0;
+  var liq = v - d;
+  var box = document.getElementById('liq-box');
+  if (v > 0) {
+    box.style.display = 'flex';
+    document.getElementById('liq-val').textContent = 'R$ ' +
+      liq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+// Atualizar progresso e checklist
+function upd() {
+  var f = [
+    document.getElementById('cliente').value.trim(),
+    document.getElementById('dia').value && document.getElementById('mes').value,
+    fd.banco,
+    document.getElementById('valor').value && parseFloat(document.getElementById('valor').value) > 0
+  ];
+  var n = f.filter(Boolean).length;
+  document.getElementById('prog').style.width = Math.round(n/4*100) + '%';
+  ['c1','c2','c3','c4'].forEach(function(id, i) {
+    var el = document.getElementById(id);
+    el.classList.toggle('done', !!f[i]);
+    el.textContent = f[i] ? '✓' : (i+1);
+  });
+}
+
+// Banco labels
+var bancoLabels = {
+  bradesco:'Bradesco', bradesco_novo:'Bradesco (novo)',
+  itau:'Itaú', caixa:'Caixa físico (dinheiro)',
+  cheque:'Cheque', cartao:'Cartão'
+};
+
+// Enviar
+function enviar() {
+  var cliente  = document.getElementById('cliente').value.trim();
+  var dia      = document.getElementById('dia').value;
+  var mes      = document.getElementById('mes').value;
+  var valor    = document.getElementById('valor').value;
+  var valid = true;
+
+  if (!cliente) { document.getElementById('f-cliente').classList.add('error'); valid=false; }
+  else           { document.getElementById('f-cliente').classList.remove('error'); }
+  if (!dia || !mes) { document.getElementById('f-dia').classList.add('error'); document.getElementById('f-mes').classList.add('error'); valid=false; }
+  else               { document.getElementById('f-dia').classList.remove('error'); document.getElementById('f-mes').classList.remove('error'); }
+  if (!fd.banco) { document.getElementById('f-banco').classList.add('error'); valid=false; }
+  if (!valor || parseFloat(valor)<=0) { document.getElementById('f-valor').classList.add('error'); valid=false; }
+  else { document.getElementById('f-valor').classList.remove('error'); }
+
+  if (!valid) {
+    document.querySelector('.field.error').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+
+  var btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  var desconto = parseFloat(document.getElementById('desconto').value) || 0;
+  var credito  = credOn ? (parseFloat(document.getElementById('credito').value) || 0) : 0;
+  var liq      = parseFloat(valor) - desconto;
+  var vendedor = document.getElementById('vendedor').value.trim();
+  var obs      = document.getElementById('obs').value.trim();
+  var now      = new Date();
+  var hora     = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  var payload = {
+    dataHora:  now.toLocaleDateString('pt-BR') + ' ' + hora,
+    cliente:   cliente,
+    vendedor:  vendedor || '—',
+    banco:     bancoLabels[fd.banco],
+    mesExtrato:mes,
+    dia:       dia.split('-').reverse().join('/'),
+    valor:     parseFloat(valor),
+    desconto:  desconto,
+    valorLiq:  liq,
+    credito:   credito,
+    obs:        obs || '—',
+    numCheque:  document.getElementById('num-cheque').value || '',
+    vencCheque: document.getElementById('venc-cheque').value ? document.getElementById('venc-cheque').value.split('-').reverse().join('/') : '',
+    bancoCheque:document.getElementById('banco-cheque').value || ''
+  };
+
+  // Enviar para Apps Script
+  fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  })
+  .then(function() { mostrarSucesso(payload); })
+  .catch(function(err) {
+    btn.disabled = false; btn.textContent = 'Registrar recebimento';
+    alert('Erro ao enviar. Verifique a conexão.\n' + err.message);
+  });
+}
+
+function fmt(v) {
+  return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function mostrarSucesso(p) {
+  var rows = [
+    ['Cliente', p.cliente],
+    ['Data', p.dia + ' · ' + p.mesExtrato],
+    ['Banco', p.banco],
+    ['Valor recebido', fmt(p.valor)],
+  ];
+  if (p.desconto > 0) rows.push(['Desconto', fmt(p.desconto)]);
+  if (p.desconto > 0) rows.push(['Valor líquido', fmt(p.valorLiq)]);
+  if (p.credito > 0)  rows.push(['Crédito', fmt(p.credito)]);
+  if (p.obs !== '—')  rows.push(['Obs.', p.obs]);
+
+  document.getElementById('summary').innerHTML = rows.map(function(r) {
+    return '<div class="sum-row"><span class="sum-label">'+r[0]+'</span><span class="sum-value">'+r[1]+'</span></div>';
+  }).join('');
+
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('success').classList.add('show');
+  window.scrollTo(0,0);
+}
+
+function reset() {
+  document.getElementById('main').style.display = 'block';
+  document.getElementById('success').classList.remove('show');
+  document.getElementById('cliente').value = '';
+  document.getElementById('vendedor').value = '';
+  document.getElementById('dia').valueAsDate = new Date();
+  document.getElementById('mes').value = '';
+  document.getElementById('valor').value = '';
+  document.getElementById('desconto').value = '';
+  document.getElementById('obs').value = '';
+  document.getElementById('credito').value = '';
+  document.getElementById('num-cheque').value = '';
+  document.getElementById('venc-cheque').value = '';
+  document.getElementById('banco-cheque').value = '';
+  var cc = document.getElementById('cond-cheque');
+  if (cc) cc.classList.remove('show');
+  fd = { banco: '' };
+  credOn = false;
+  document.getElementById('tog').classList.remove('on');
+  document.getElementById('cred-input').classList.remove('show');
+  document.getElementById('liq-box').style.display = 'none';
+  document.querySelectorAll('.radio-item').forEach(function(i) {
+    i.classList.remove('active');
+    var d = i.querySelector('.radio-dot');
+    if(d){d.style.opacity='0';d.style.transform='scale(0)';}
+  });
+  document.querySelectorAll('.field.error').forEach(function(f){f.classList.remove('error');});
+  document.getElementById('prog').style.width='0%';
+  ['c1','c2','c3','c4'].forEach(function(id,i){
+    var el=document.getElementById(id); el.classList.remove('done'); el.textContent=i+1;
+  });
+  window.scrollTo(0,0);
+}
+
+upd();
+</script>
+</body>
+</html>
